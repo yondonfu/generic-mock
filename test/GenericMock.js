@@ -15,11 +15,11 @@ contract("GenericMock", accounts => {
     it("should return mock uint256 values", async () => {
         const fooFunc = functionSelector("foo()")
 
-        await mock.setMockValue(fooFunc, 5)
+        await mock.setMockUint256(fooFunc, 5)
         await test.getUint256Value()
         assert.equal(await test.uint256Value.call(), 5, "mock value incorrect")
 
-        await mock.setMockValue(fooFunc, 8)
+        await mock.setMockUint256(fooFunc, 8)
         await test.getUint256Value()
         assert.equal(await test.uint256Value.call(), 8, "mock value incorrect")
     })
@@ -29,13 +29,25 @@ contract("GenericMock", accounts => {
         const h1 = web3.sha3("hello")
         const h2 = web3.sha3("world")
 
-        await mock.setMockValue(barFunc, h1)
+        await mock.setMockBytes32(barFunc, h1)
         await test.getBytes32Value()
         assert.equal(await test.bytes32Value.call(), h1, "mock bytes32 value incorrect")
 
-        await mock.setMockValue(barFunc, h2)
+        await mock.setMockBytes32(barFunc, h2)
         await test.getBytes32Value()
         assert.equal(await test.bytes32Value.call(), h2, "mock bytes32 value incorrect")
+    })
+
+    it("should return mock bool values", async () => {
+        const buzzFunc = functionSelector("buzz()")
+
+        await mock.setMockBool(buzzFunc, true)
+        await test.getBoolValue()
+        assert.equal(await test.boolValue.call(), true, "mock bool value incorrect")
+
+        await mock.setMockBool(buzzFunc, false)
+        await test.getBoolValue()
+        assert.equal(await test.boolValue.call(), false, "mock bool value incorrect")
     })
 
     it("should execute a permissioned function", async () => {

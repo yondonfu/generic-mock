@@ -1,7 +1,8 @@
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.17;
 
 
 contract IFoo {
-    function foo() public constant returns (uint256);
-    function bar() public constant returns (bytes32);
+    function foo() public view returns (uint256);
+    function bar() public view returns (bytes32);
+    function buzz() public view returns (bool);
 }

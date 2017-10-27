@@ -1,6 +1,7 @@
 # Generic Mock
 
-Solidity contract that can be used to mock contract dependencies during testing.
+Solidity contract that can be used to mock contract dependencies during testing. Currently supports mocking the following
+Solidity types: `uint256`, `bytes32`, `bool`
 
 # Usage
 
@@ -14,7 +15,7 @@ it("test", async () => {
     // in the constructor of the contract under test
 
     // Set mock return value
-    await mock.setMockValue(functionSelector("foo()"), 5)
+    await mock.setMockUint256(functionSelector("foo()"), 5)
 })
 ```
 

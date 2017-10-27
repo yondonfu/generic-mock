@@ -1,4 +1,4 @@
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.17;
 
 
 /*
@@ -9,10 +9,11 @@ contract GenericMock {
     struct MockValue {
         uint256 uint256Value;
         bytes32 bytes32Value;
+        bool boolValue;
         MockValueType valueType;
     }
 
-    enum MockValueType { Uint256, Bytes32, None }
+    enum MockValueType { Uint256, Bytes32, Bool, None }
 
     // Track function selectors and mapped mock values
     mapping (bytes4 => MockValue) mockValues;
@@ -29,22 +30,31 @@ contract GenericMock {
     /*
      * @dev Set a mock uint256 value for a function
      * @param _func Function selector (bytes4(keccak256(FUNCTION_SIGNATURE)))
-     * @param _value Mock value
+     * @param _value Mock uint256 value
      */
-    function setMockValue(bytes4 _func, uint256 _value) external returns (bool) {
+    function setMockUint256(bytes4 _func, uint256 _value) external returns (bool) {
         mockValues[_func].valueType = MockValueType.Uint256;
         mockValues[_func].uint256Value = _value;
     }
 
     /*
      * @dev Set a mock bytes32 value for a function
-     * @param _func Function
      * @param _func Function selector (bytes4(keccak256(FUNCTION_SIGNATURE)))
-     * param _value Mock value
+     * param _value Mock bytes32 value
      */
-    function setMockValue(bytes4 _func, bytes32 _value) external returns (bool) {
+    function setMockBytes32(bytes4 _func, bytes32 _value) external {
         mockValues[_func].valueType = MockValueType.Bytes32;
         mockValues[_func].bytes32Value = _value;
+    }
+
+    /*
+     * @dev Set a mock bool value for a function
+     * @param _func Function selector (bytes4(keccak256(FUNCTION_SIGNATURE)))
+     * @param _value Mock bool value
+     */
+    function setMockBool(bytes4 _func, bool _value) external {
+        mockValues[_func].valueType = MockValueType.Bool;
+        mockValues[_func].boolValue = _value;
     }
 
     /*
@@ -58,6 +68,8 @@ contract GenericMock {
             mLoadAndReturn(mockValues[func].uint256Value);
         } else if (mockValues[func].valueType == MockValueType.Bytes32) {
             mLoadAndReturn(mockValues[func].bytes32Value);
+        } else if (mockValues[func].valueType == MockValueType.Bool) {
+            mLoadAndReturn(mockValues[func].boolValue);
         } else {
             // No type set - no mock value
             revert();
@@ -68,7 +80,7 @@ contract GenericMock {
      * @dev Load a uint256 value into memory and return it
      * @param _value Uint256 value
      */
-    function mLoadAndReturn(uint256 _value) private {
+    function mLoadAndReturn(uint256 _value) private pure {
         assembly {
             let memOffset := mload(0x40)
             mstore(0x40, add(memOffset, 32))
@@ -81,7 +93,20 @@ contract GenericMock {
      * @dev Load a bytes32 value into memory and return it
      * @param _value Bytes32 value
      */
-    function mLoadAndReturn(bytes32 _value) private {
+    function mLoadAndReturn(bytes32 _value) private pure {
+        assembly {
+            let memOffset := mload(0x40)
+            mstore(0x40, add(memOffset, 32))
+            mstore(memOffset, _value)
+            return(memOffset, 32)
+        }
+    }
+
+    /*
+     * @dev Load a bool value into memory and return it
+     * @param _value Bool value
+     */
+    function mLoadAndReturn(bool _value) private pure {
         assembly {
             let memOffset := mload(0x40)
             mstore(0x40, add(memOffset, 32))

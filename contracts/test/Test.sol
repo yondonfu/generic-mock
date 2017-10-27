@@ -1,4 +1,4 @@
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.17;
 
 import "./IFoo.sol";
 
@@ -8,6 +8,7 @@ contract Test {
 
     uint256 public uint256Value;
     bytes32 public bytes32Value;
+    bool public boolValue;
     uint256 public protectedValue;
 
     modifier onlyFoo() {
@@ -15,20 +16,23 @@ contract Test {
         _;
     }
 
-    function Test(address _foo) {
+    function Test(address _foo) public {
         myFoo = IFoo(_foo);
     }
 
-    function getUint256Value() public returns (uint256) {
+    function getUint256Value() public {
         uint256Value = myFoo.foo();
     }
 
-    function getBytes32Value() public returns (bytes32) {
+    function getBytes32Value() public {
         bytes32Value = myFoo.bar();
     }
 
-    function protectedFunc() public onlyFoo returns (bool) {
+    function getBoolValue() public {
+        boolValue = myFoo.buzz();
+    }
+
+    function protectedFunc() public onlyFoo {
         protectedValue = 5;
-        return true;
     }
 }
