@@ -50,6 +50,11 @@ contract("GenericMock", accounts => {
         assert.equal(await test.boolValue.call(), false, "mock bool value incorrect")
     })
 
+    it("should return false for a function signature that does not have a mock value set", async () => {
+        await test.getUnsetValue()
+        assert.equal(await test.unsetValue.call(), false, "unset value is not false")
+    })
+
     it("should execute a permissioned function", async () => {
         const protectedFunc = functionSelector("protectedFunc()")
         await mock.execute(test.address, protectedFunc)

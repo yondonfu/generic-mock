@@ -9,6 +9,7 @@ contract Test {
     uint256 public uint256Value;
     bytes32 public bytes32Value;
     bool public boolValue;
+    bool public unsetValue;
     uint256 public protectedValue;
 
     modifier onlyFoo() {
@@ -30,6 +31,10 @@ contract Test {
 
     function getBoolValue() public {
         boolValue = myFoo.buzz();
+    }
+
+    function getUnsetValue() public {
+        unsetValue = myFoo.jar();
     }
 
     function protectedFunc() public onlyFoo {
